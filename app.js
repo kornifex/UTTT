@@ -1,11 +1,11 @@
 var app = require('express').createServer(),
     io = require('socket.io').listen(app);
 
-server.listen(8080);
+server.listen(40024);
 
 // Route
 app.get('/', function (req, res) {
-    res.sendfile(__dirname + '/index.html');
+    res.sendfile(__dirname + '/public/index.html');
 });
 
 // Sockets
