@@ -1,7 +1,12 @@
-var app = require('express')(),
-    server = app.listen(40024),
-    io = require('socket.io').listen(server);
+var express = require('express'),
+    app     = express(),
+    server  = app.listen(40024),
+    io      = require('socket.io').listen(server);
 
+// Config
+app.configure(function() {
+  app.use(express.static(__dirname + '/public'));
+});
 
 // Route
 app.get('/', function (req, res) {
