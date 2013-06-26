@@ -1,10 +1,15 @@
 require.config({
   paths   : {
     underscore    : 'lib/underscore',
+    backbone      : 'lib/backbone',
     jquery        : 'lib/jquery',
     socket        : 'http://localhost:40024/socket.io/socket.io'
   },
   shim    : {
+    backbone    : {
+      deps        : [ 'jquery', 'underscore' ],
+      exports     : 'Backbone'
+    },
     underscore  : {
       exports     : '_'
     }
@@ -22,11 +27,13 @@ require([
   _,
   MainController
 ) {
-  var socket = io.connect('http://localhost:40024');
-  socket.on('update', function (update) {
-    console.log(update.msg);
-  });
 
-  window.app = new MainController();
+  var socket = io.connect('http://localhost:40024');
+
+
+
+  window.app = new MainController({
+    socket: socket
+  });
 
 });
