@@ -14,16 +14,19 @@ require.config({
 require([
   'socket',
   'jquery',
-  'underscore'
+  'underscore',
+  'src/MainController'
 ], function(
   io,
   $,
-  _
+  _,
+  MainController
 ) {
   var socket = io.connect('http://localhost:40024');
   socket.on('update', function (update) {
     console.log(update.msg);
   });
 
-  console.log(socket, $, _);
+  window.app = new MainController();
+
 });
