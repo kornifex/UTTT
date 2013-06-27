@@ -35,7 +35,6 @@ io.sockets.on('connection', function (s) {
     }
 
     if (!game) {
-
       game = new Game({
         io: io
       });

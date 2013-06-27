@@ -1,11 +1,7 @@
-var i = 0;
-
 var Game = function Game (opt) {
-
   this.id = generateId();
   this.players = [];
   this.io = opt.io;
-
 };
 
 Game.prototype.addPlayer = function addPlayer (player) {
@@ -22,9 +18,8 @@ Game.prototype.start = function start () {
   });
 };
 
-
 var generateId = function () {
-  return i++;
+  return Math.random().toString(36).substring(2, 8);
 };
 
 module.exports = Game;

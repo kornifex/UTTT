@@ -1,5 +1,3 @@
-var j = 0;
-
 var Player = function Player (opt) {
   this.id       = generateId();
   this.socket   = opt.socket;
@@ -23,7 +21,7 @@ Player.prototype.wait = function wait () {
 };
 
 var generateId = function () {
-  return j++;
+  return Math.random().toString(36).substring(2, 8);
 };
 
 module.exports = Player;
