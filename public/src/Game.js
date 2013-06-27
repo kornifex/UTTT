@@ -1,9 +1,11 @@
 define([
   'underscore',
-  'src/BaseClass'
+  'src/BaseClass',
+  'src/Arena'
 ], function(
   _,
-  BaseObject
+  BaseObject,
+  Arena
 ) {
 
   return BaseObject.extend({
@@ -27,8 +29,9 @@ define([
 
       }
 
-      // this.arena = new Arena();
-
+      this.arena = new Arena();
+      this.arena.render();
+      this.arena.draw();
     },
 
     onJoinPlz: function(data) {
