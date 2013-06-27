@@ -1,13 +1,13 @@
 {
-    "name": "UTTT",
-    "version": "0.1.0",
-    "dependencies": {
-        "express": "~3.2.6",
-        "ejs": "~0.8.3",
-        "socket.io": "~0.9.16"
-    },
-    "author": "Reedbear <j.serenrosso@gmail.com>",
-    "contributors": [
+  "name": "UTTT",
+  "version": "0.1.0",
+  "dependencies": {
+    "express": "~3.2.6",
+    "ejs": "~0.8.3",
+    "socket.io": "~0.9.16"
+  },
+  "author": "Reedbear <j.serenrosso@gmail.com>",
+  "contributors": [
     {
       "name": "Julien Seren-Rosso",
       "email": "j.serenrosso@gmail.com"
@@ -16,5 +16,9 @@
         "name": "Arthur Jamain",
         "email": "arthur.jamain@gmail.com"
     }],
-    "description": "Ultimate Tic-Tac-Toe"
+  "description": "Ultimate Tic-Tac-Toe",
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.2.x"
+  }
 }
