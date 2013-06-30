@@ -109,7 +109,7 @@ define([
       this.game.activate({
         grid: [ xGridPos, yGridPos ],
         cell: [ xCellPos, yCellPos ]
-      });
+      }, true);
 
     }
 

@@ -15,13 +15,15 @@ define([
     initialize: function(opt) {
       console.info('mainController initialized');
 
-      this.router = new Router({
-        socket: opt.socket
-      });
       this.game = new Game({
         client: true,
         controller: this,
         socket: opt.socket
+      });
+
+      this.router = new Router({
+        socket: opt.socket,
+        game: this.game
       });
 
 

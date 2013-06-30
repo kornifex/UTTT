@@ -1,17 +1,22 @@
 define([
   'underscore',
   'src/BaseClass',
-  'src/Arena'
+  'src/Arena',
+  'src/Player',
+  'src/Opponent'
 ], function(
   _,
   BaseObject,
-  Arena
+  Arena,
+  Player,
+  Opponent
 ) {
   var Grid;
   var Cell;
   var Game = BaseObject.extend({
 
-    players: [],
+    player: null,
+    opponent: null,
     grid: [],
 
     initialize: function(opt) {
@@ -20,17 +25,18 @@ define([
       this.client     = opt.client || false;
       this.controller = opt.controller;
       this.socket     = opt.socket;
+      this.opponent   = new Opponent();
+      this.player     = new Player({
+        game    : this,
+        socket  : this.socket
+      });
 
       if(this.client) {
 
-        this.socket.on('UT_JOINPLZ' , _.bind( this.onJoinPlz  , this ));
+        this.socket.on('UT_CONFIRM' , _.bind( this.onConfirm  , this ));
         this.socket.on('UT_STARTNAO', _.bind( this.onStartNao , this ));
-        this.socket.on('UT_WAITNAO' , _.bind( this.onWaitNao  , this ));
-
-        this.socket.emit('UT_GAMEPLZ');
 
       }
-
 
       this.arena = new Arena({
         game: this
@@ -55,12 +61,16 @@ define([
       }
     },
 
-    activate: function(coords) {
+    activate: function(coords, client) {
 
       var g = coords.grid,
           c = coords.cell,
           grid = this.grid[g[0]][g[1]],
           cell = grid.cells[c[0]][c[1]];
+
+
+      if(!this.started) return;
+      if(client && !this.player.playing) return;
 
       if((typeof this.getPlayableGrid() === 'undefined' ||
         grid === this.getPlayableGrid() ) &&
@@ -88,24 +98,41 @@ define([
       return this.playableGrid;
     },
 
-    onJoinPlz: function(data) {
+    onConfirm: function(data) {
 
-      this.controller.router.navigate('play/' + data.id, {
-        trigger: true,
-        replace: false
-      });
+      this.id = data.roomId;
+      this.controller.router.navigate('play/' + this.id);
 
     },
 
     onStartNao: function(data) {
+      var self = this;
       console.log('STARTNAO', data);
+      var opponent = _.find(data.players, function(el) {
+        return el.id !== self.player.id;
+      });
+      this.opponent.setId(opponent.id);
 
-      // this.players[1] = new Player(data.playerId);
+      this.setPlayerStatus(data.playingId);
+      this.start();
+    },
+
+    setPlayerStatus: function(playingId) {
+
+      if(this.player.id === playingId) {
+        this.player.playing();
+        this.opponent.idle();
+      } else {
+        this.player.idle();
+        this.opponent.playing();
+      }
 
     },
 
-    onWaitNao: function(data) {
-      console.log('WAITNAO', data);
+    start: function() {
+
+      this.started = true;
+
     }
 
   });
