@@ -13,7 +13,7 @@ Game.prototype.addPlayer = function addPlayer (player) {
 };
 
 Game.prototype.start = function start () {
-  this.playingId = this.players[0];
+  this.playingId = this.players[0].id;
 
   this.io.sockets.in(this.id).emit('UT_STARTNAO', {
     id: this.id,
