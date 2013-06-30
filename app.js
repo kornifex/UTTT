@@ -1,6 +1,6 @@
 var express = require('express'),
     app     = express(),
-    server  = app.listen(40024),
+    server  = app.listen(process.env.PORT || 40024),
     io      = require('socket.io').listen(server),
     Player  = require('./src/Player'),
     Game    = require('./src/Game');
