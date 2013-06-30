@@ -40,11 +40,8 @@ io.sockets.on('connection', function (s) {
       });
       game.addPlayer(player);
       games.push(game);
-
-      player.wait();
     } else {
       game.addPlayer(player);
-      player.wait();
       game.start();
     }
   });

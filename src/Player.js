@@ -12,12 +12,14 @@ Player.prototype.toJSON = function() {
 Player.prototype.joinRoom = function joinRoom (id) {
   this.socket.join(id);
   console.log('joined room ' + id);
+
+  this.confirm(id);
 };
 
-Player.prototype.wait = function wait () {
-  this.socket.emit('UT_WAITNAO', {
-    id: this.id,
-    message: 'OK merci michel'
+Player.prototype.confirm = function confirm (roomId) {
+  this.socket.emit('UT_CONFIRM', {
+    roomId: roomId,
+    id: this.id
   });
 };
 
