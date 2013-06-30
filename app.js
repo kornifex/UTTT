@@ -49,7 +49,6 @@ io.sockets.on('connection', function (s) {
       game.start();
 
     }
-
   });
 });
 

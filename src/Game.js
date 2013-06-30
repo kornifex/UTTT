@@ -2,6 +2,7 @@ var Game = function Game (opt) {
   this.id = generateId();
   this.players = [];
   this.io = opt.io;
+  this.playingId = null;
 };
 
 Game.prototype.addPlayer = function addPlayer (player) {
@@ -12,9 +13,13 @@ Game.prototype.addPlayer = function addPlayer (player) {
 };
 
 Game.prototype.start = function start () {
+
+  this.playingId = this.players[0];
+
   this.io.sockets.in(this.id).emit('UT_STARTNAO', {
     id: this.id,
-    players: this.players
+    players: this.players,
+    playingId: this.playingId
   });
 };
 
