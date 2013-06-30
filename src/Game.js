@@ -13,7 +13,6 @@ Game.prototype.addPlayer = function addPlayer (player) {
 };
 
 Game.prototype.start = function start () {
-
   this.playingId = this.players[0];
 
   this.io.sockets.in(this.id).emit('UT_STARTNAO', {
@@ -21,6 +20,19 @@ Game.prototype.start = function start () {
     players: this.players,
     playingId: this.playingId
   });
+};
+
+// Responsible for checking the validity of the move and emitting the new player ID
+Game.prototype.move = function move () {
+  checkMove();
+
+  this.io.sockets.in(this.id).emit('UT_MOVENAO', {
+    playingId: this.playingId
+  });
+};
+
+var checkMove = function () {
+
 };
 
 var generateId = function () {

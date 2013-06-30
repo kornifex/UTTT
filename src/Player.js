@@ -16,6 +16,7 @@ Player.prototype.joinRoom = function joinRoom (id) {
 
 Player.prototype.wait = function wait () {
   this.socket.emit('UT_WAITNAO', {
+    id: this.id,
     message: 'OK merci michel'
   });
 };
