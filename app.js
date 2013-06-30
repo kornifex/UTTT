@@ -42,12 +42,10 @@ io.sockets.on('connection', function (s) {
       games.push(game);
 
       player.wait();
-
     } else {
-
       game.addPlayer(player);
+      player.wait();
       game.start();
-
     }
   });
 });
