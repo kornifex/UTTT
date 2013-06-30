@@ -24,15 +24,9 @@ Game.prototype.start = function start () {
 
 // Responsible for checking the validity of the move and emitting the new player ID
 Game.prototype.move = function move () {
-  checkMove();
-
   this.io.sockets.in(this.id).emit('UT_MOVENAO', {
     playingId: this.playingId
   });
-};
-
-var checkMove = function () {
-
 };
 
 var generateId = function () {
