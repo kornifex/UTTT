@@ -45,5 +45,14 @@ io.sockets.on('connection', function (s) {
       game.start();
     }
   });
+
+  s.on('UT_KTHX', function (gameId) {
+    // ok ok.
+  });
+
+  s.on('UT_MOVE', function () {
+
+  });
+
 });
 
