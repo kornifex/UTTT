@@ -35,8 +35,7 @@ define([
     onConfirm: function(data) {
       this.setId(data.id);
       this.socket.emit('UT_KTHX', {
-        id: data.gameId,
-        playerId: this.id
+        gameId: data.gameId
       });
     }
 
