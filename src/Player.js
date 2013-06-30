@@ -1,6 +1,8 @@
 var Player = function Player (opt) {
   this.id       = generateId();
   this.socket   = opt.socket;
+
+  s.on('UT_KTHX',this.onKthnks);
 };
 
 Player.prototype.toJSON = function() {
@@ -21,6 +23,10 @@ Player.prototype.confirm = function confirm (roomId) {
     roomId: roomId,
     id: this.id
   });
+};
+
+Player.prototype.onKthnks = function onKthnks (gameId) {
+  // ok ok
 };
 
 var generateId = function () {

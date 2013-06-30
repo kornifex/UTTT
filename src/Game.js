@@ -3,6 +3,8 @@ var Game = function Game (opt) {
   this.players = [];
   this.io = opt.io;
   this.playingId = null;
+
+    s.on('UT_MOVE', this.onMove);
 };
 
 Game.prototype.addPlayer = function addPlayer (player) {
@@ -22,8 +24,13 @@ Game.prototype.start = function start () {
   });
 };
 
-// Responsible for checking the validity of the move and emitting the new player ID
+Game.prototype.onMove = function onMove () {
+
+};
+
 Game.prototype.move = function move () {
+  // check move
+
   this.io.sockets.in(this.id).emit('UT_MOVENAO', {
     playingId: this.playingId
   });
