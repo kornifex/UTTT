@@ -25,15 +25,19 @@ define([
     },
 
     playing: function() {
-      this.playing = true;
+      console.log('PLAYER CAN NOW PLAY');
+      this.active = true;
     },
 
     idle: function() {
-      this.playing = false;
+      console.log('PLAYER NOW WAITING');
+      this.active = false;
     },
 
     onConfirm: function(data) {
       this.setId(data.id);
+      this.symbol = data.symbol;
+      console.log('CONFIRM', data);
       this.socket.emit('UT_KTHX', {
         gameId: data.gameId
       });

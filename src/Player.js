@@ -2,18 +2,20 @@ var Player = function Player (opt) {
   this.id       = generateId();
   this.socket   = opt.socket;
 
-  s.on('UT_KTHX',this.onKthnks);
+  this.socket.on('UT_KTHX',this.onKthnks);
 };
 
 Player.prototype.toJSON = function() {
   return {
-    id: this.id
+    id: this.id,
+    symbol: this.symbol
   };
 };
 
-Player.prototype.joinRoom = function joinRoom (id) {
+Player.prototype.joinRoom = function joinRoom (id, symbol) {
   this.socket.join(id);
   console.log('joined room ' + id);
+  this.symbol = symbol;
 
   this.confirm(id);
 };
@@ -21,7 +23,8 @@ Player.prototype.joinRoom = function joinRoom (id) {
 Player.prototype.confirm = function confirm (roomId) {
   this.socket.emit('UT_CONFIRM', {
     roomId: roomId,
-    id: this.id
+    id: this.id,
+    symbol: this.symbol || 0
   });
 };
 

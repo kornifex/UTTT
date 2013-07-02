@@ -80,7 +80,7 @@ define([
       var ctx = this.ctx;
       ctx.beginPath();
 
-      if(symbol === -1) {
+      if(symbol === 0) {
 
         ctx.moveTo(cell.grid.originX + cell.originX + this.padding * 2, cell.grid.originY + cell.originY + this.padding * 2);
         ctx.lineTo(cell.grid.originX + cell.originX + cell.width - this.padding * 2, cell.grid.originY + cell.originY + cell.height - this.padding * 2);

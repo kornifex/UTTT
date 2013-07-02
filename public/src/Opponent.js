@@ -10,6 +10,12 @@ define([
 
     initialize: function() {
 
+    },
+    playing: function() {
+      this.active = true;
+    },
+    idle: function() {
+      this.active = false;
     }
 
   });

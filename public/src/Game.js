@@ -35,6 +35,7 @@ define([
 
         this.socket.on('UT_CONFIRM' , _.bind( this.onConfirm  , this ));
         this.socket.on('UT_STARTNAO', _.bind( this.onStartNao , this ));
+        this.socket.on('UT_MOVENAO' , _.bind( this.onMoveNao  , this ));
 
       }
 
@@ -78,9 +79,8 @@ define([
 
         if (!this.toggle) this.toggle = 1;
 
-        this.arena.drawSymbol(cell, this.toggle *= -1);
-        this.setPlayableGrid.apply(this, c);
-        cell.activated = true;
+
+        this.requestMove(coords);
 
       } else {
 
@@ -88,6 +88,11 @@ define([
 
       }
 
+    },
+
+    requestMove: function(coords) {
+      this.socket.emit('UT_MOVE', {id: this.id, coords: coords});
+      this.player.idle();
     },
 
     setPlayableGrid: function(x, y) {
@@ -112,9 +117,28 @@ define([
         return el.id !== self.player.id;
       });
       this.opponent.setId(opponent.id);
+      this.opponent.symbol = opponent.symbol;
 
       this.setPlayerStatus(data.playingId);
       this.start();
+    },
+
+    onMoveNao: function(data) {
+      var coords = data.coords,
+          g = coords.grid,
+          c = coords.cell,
+          grid = this.grid[g[0]][g[1]],
+          cell = grid.cells[c[0]][c[1]];
+
+      var player = this.getPlayerFromId(data.playingId);
+      console.log('MOVENAO', data);
+      if(player && cell) {
+        this.arena.drawSymbol(cell, player.symbol);
+        this.setPlayableGrid.apply(this, c);
+        cell.activated = true;
+
+        this.setPlayerStatus(data.playingId);
+      }
     },
 
     setPlayerStatus: function(playingId) {
@@ -127,6 +151,14 @@ define([
         this.opponent.playing();
       }
 
+    },
+
+    getPlayerFromId: function(id) {
+      if(this.player.id === id) {
+        return this.player;
+      } else if (this.opponent.id === id) {
+        return this.opponent;
+      }
     },
 
     start: function() {
