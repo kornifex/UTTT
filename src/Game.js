@@ -6,6 +6,8 @@ var Game = function Game (opt) {
   this.playingId = null;
   this.symbols = 0;
   this.move = _.bind(this.move, this);
+
+  console.log('Room ' + this.id + ' created!');
 };
 
 Game.prototype.addPlayer = function addPlayer (player) {
@@ -25,6 +27,8 @@ Game.prototype.start = function start () {
     players: this.players,
     playingId: this.playingId
   });
+
+  console.log('Room ' + this.id + ' start now!');
 };
 
 Game.prototype.move = function move (coords) {

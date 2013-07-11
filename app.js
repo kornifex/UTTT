@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 
 // Sockets
 io.sockets.on('connection', function (s) {
-
+  console.log('yo');
   var player = new Player({
     socket: s
   });
