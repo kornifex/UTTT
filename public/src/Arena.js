@@ -10,17 +10,18 @@ define([
   var Cell;
   var Arena = Backbone.View.extend({
 
-    tagName     : 'canvas',
-    id          : 'game',
-    attributes  : {
-      height      : 800,
-      width       : 800
+    tagName       : 'canvas',
+    id            : 'game',
+    attributes    : {
+      height        : 800,
+      width         : 800
     },
-    events      : {
-      'click'     : 'onClick'
+    events        : {
+      'click'       : 'onClick'
     },
-    padding     : 10,
-    grid        : [],
+    padding       : 10,
+    grid          : [],
+    recordedMoves : [],
 
     /**
      * Creates an instance of Arena.
@@ -76,8 +77,11 @@ define([
 
     },
 
-    drawSymbol: function(cell, symbol) {
+    drawSymbol: function(cell, symbol, cancelRecord) {
       var ctx = this.ctx;
+      if(!cancelRecord) {
+        this.recordedMoves.push({cell: cell, symbol: symbol});
+      }
       ctx.beginPath();
 
       if(symbol === 0) {
@@ -97,6 +101,51 @@ define([
 
       }
       ctx.stroke();
+    },
+
+    drawLine: function(line) {
+      var ctx = this.ctx;
+      var c0 = line.cells[0];
+      var c1 = line.cells[2];
+      ctx.beginPath();
+      ctx.lineWidth = 2;
+
+      ctx.moveTo(c0.grid.originX + c0.originX + c0.width / 2, c0.grid.originY + c0.originY + c0.height / 2);
+      ctx.lineTo(c1.grid.originX + c1.originX + c1.width / 2, c1.grid.originY + c1.originY + c1.height / 2);
+
+      ctx.stroke();
+
+    },
+
+    drawPlayableArea: function(grid) {
+
+      var ctx = this.ctx;
+      ctx.beginPath();
+      ctx.fillStyle = "rgba(0, 180, 0, 0.2)";
+
+      if(grid === null) {
+
+        ctx.fillRect (0, 0, this.el.width, this.el.height);
+        ctx.strokeStyle = "rgba(0, 180, 0, 0.6)";
+        ctx.stroke();
+
+      } else {
+
+        ctx.fillRect (grid.originX, grid.originY, grid.width, grid.height);
+        ctx.strokeStyle = "rgba(0, 180, 0, 0.6)";
+        ctx.stroke();
+
+      }
+    },
+
+    clearPlayableArea: function() {
+      var self = this;
+
+      this.el.width = this.el.width;
+      this.draw(this.game.grid);
+      _.each(this.recordedMoves, function(move) {
+        self.drawSymbol(move.cell, move.symbol, true);
+      });
     },
 
     onClick: function(e) {

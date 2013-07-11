@@ -17,6 +17,7 @@ define([
 
     player: null,
     opponent: null,
+    playableGrid: null,
     grid: [],
 
     initialize: function(opt) {
@@ -43,10 +44,23 @@ define([
         game: this
       });
 
+      this.newGame();
+
+    },
+
+    newGame: function() {
+
       this.initializeGrid();
 
       this.arena.render();
       this.arena.draw(this.grid);
+
+      console.log('Game started !');
+
+    },
+
+    clearGame: function() {
+
     },
 
     /**
@@ -67,19 +81,18 @@ define([
       var g = coords.grid,
           c = coords.cell,
           grid = this.grid[g[0]][g[1]],
-          cell = grid.cells[c[0]][c[1]];
+          cell = grid.cells[c[0]][c[1]],
+          playableGrid = this.getPlayableGrid();
 
 
       if(!this.started) return;
-      if(client && !this.player.playing) return;
+      if(client && !this.player.active) return;
 
-      if((typeof this.getPlayableGrid() === 'undefined' ||
-        grid === this.getPlayableGrid() ) &&
+      if((playableGrid === null ||
+        grid === playableGrid ) &&
         !cell.activated ) {
 
         if (!this.toggle) this.toggle = 1;
-
-
         this.requestMove(coords);
 
       } else {
@@ -96,7 +109,14 @@ define([
     },
 
     setPlayableGrid: function(x, y) {
-      this.playableGrid = this.grid[x][y];
+
+      var grid = this.grid[x][y];
+      console.log('Grid ['+x+','+y+'] has empty space ? : ' + this.grid[x][y].hasEmptySpace());
+      if(this.grid[x][y].hasEmptySpace()) {
+        this.playableGrid = grid;
+      } else {
+        this.playableGrid = null;
+      }
     },
 
     getPlayableGrid: function() {
@@ -121,6 +141,10 @@ define([
 
       this.setPlayerStatus(data.playingId);
       this.start();
+
+      if(this.player.active) {
+        this.arena.drawPlayableArea(null);
+      }
     },
 
     onMoveNao: function(data) {
@@ -128,16 +152,67 @@ define([
           g = coords.grid,
           c = coords.cell,
           grid = this.grid[g[0]][g[1]],
-          cell = grid.cells[c[0]][c[1]];
+          cell = grid.cells[c[0]][c[1]],
+          playableGrid;
 
       var player = this.getPlayerFromId(data.playingId);
       console.log('MOVENAO', data);
       if(player && cell) {
         this.arena.drawSymbol(cell, player.symbol);
-        this.setPlayableGrid.apply(this, c);
         cell.activated = true;
+        cell.symbol = player.symbol;
+        this.setPlayableGrid.apply(this, c);
 
         this.setPlayerStatus(data.playingId);
+
+        playableGrid = this.getPlayableGrid();
+
+        if(this.player.active) {
+          this.arena.drawPlayableArea(playableGrid);
+        } else {
+          this.arena.clearPlayableArea();
+        }
+        this.setLines();
+        victory = this.isVictory();
+        if(victory) {
+          alert("Victory :D");
+        }
+      }
+    },
+
+    isVictory: function() {
+      var c = this.grid;
+
+      for (var o = 0 ; o < 3 ; o++) {
+        if (typeof c[o][0].symbol !== 'undefined' && c[o][0].symbol === c[o][1].symbol && c[o][1].symbol === c[o][2].symbol) {
+          return true;
+        }
+        if (typeof c[0][o].symbol !== 'undefined' && c[0][o].symbol === c[1][o].symbol && c[1][o].symbol === c[2][o].symbol) {
+          return true;
+        }
+      }
+      if (typeof c[0][0].symbol !== 'undefined' && c[0][0].symbol === c[1][1].symbol && c[1][1].symbol === c[2][2].symbol) {
+        return true;
+      }
+      if (typeof c[0][2].symbol !== 'undefined' && c[0][2].symbol === c[1][1].symbol && c[1][1].symbol === c[2][0].symbol) {
+        return true;
+      }
+
+      return false;
+    },
+
+    setLines: function() {
+      for(var i in this.grid) {
+        for(var j in this.grid[i]) {
+          var line = this.grid[i][j].getLine();
+          if(line) {
+            console.log('got line ! ', line);
+            this.grid[i][j].activated = true;
+            this.grid[i][j].symbol = line.symbol;
+
+            this.arena.drawLine(line);
+          }
+        }
       }
     },
 
@@ -213,6 +288,48 @@ define([
       }
     },
 
+    hasEmptySpace: function() {
+
+      var cell = _.find(this.cells, function(cell, i) {
+        return _.find(cell, function(c, j) {
+          console.log('Cell['+i+','+j+'] : playable ? ' + !c.activated);
+          return !c.activated;
+        });
+      });
+
+      return !!cell;
+    },
+
+    getLine: function() {
+      var c = this.cells;
+      var line = {};
+
+      for (var o = 0 ; o < 3 ; o++) {
+        if (typeof c[o][0].symbol !== 'undefined' && c[o][0].symbol === c[o][1].symbol && c[o][1].symbol === c[o][2].symbol) {
+          line.cells = [ c[o][0], c[o][1], c[o][2] ];
+          line.symbol = c[o][0].symbol;
+        }
+        if (typeof c[0][o].symbol !== 'undefined' && c[0][o].symbol === c[1][o].symbol && c[1][o].symbol === c[2][o].symbol) {
+          line.cells = [ c[0][o], c[1][o], c[2][o] ];
+          line.symbol = c[0][o].symbol;
+        }
+      }
+      if (typeof c[0][0].symbol !== 'undefined' && c[0][0].symbol === c[1][1].symbol && c[1][1].symbol === c[2][2].symbol) {
+        line.cells = [ c[0][0], c[1][1], c[2][2] ];
+        line.symbol = c[0][0].symbol;
+      }
+      if (typeof c[0][2].symbol !== 'undefined' && c[0][2].symbol === c[1][1].symbol && c[1][1].symbol === c[2][0].symbol) {
+        line.cells = [ c[0][2], c[1][1], c[2][0] ];
+        line.symbol = c[0][2].symbol;
+      }
+
+      if (typeof line.symbol !== 'undefined') {
+        return line;
+      } else {
+        return false;
+      }
+    },
+
     getRelativePoint: function (x, y) {
       return {
         x: x - this.originX,
@@ -223,7 +340,6 @@ define([
     getCell: function (x, y) {
       var cellX = Math.floor(x / (this.width / 3));
       var cellY = Math.floor(y / (this.height / 3));
-      console.log('Cell', cellX, cellY);
       return this.cells[cellX][cellY];
     }
   });
