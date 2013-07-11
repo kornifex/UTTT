@@ -5,7 +5,8 @@
     "express": "~3.2.6",
     "ejs": "~0.8.3",
     "socket.io": "~0.9.16",
-    "underscore": "1.5.x"
+    "underscore": "1.5.x",
+    "moniker":"~0.1.2"
   },
   "author": "Reedbear <j.serenrosso@gmail.com>",
   "contributors": [
