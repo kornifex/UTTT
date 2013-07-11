@@ -3,7 +3,7 @@ require.config({
     underscore    : 'lib/underscore',
     backbone      : 'lib/backbone',
     jquery        : 'lib/jquery',
-    socket        : 'http://localhost:40024/socket.io/socket.io'
+    socket        : 'http://' + document.location.host + '/socket.io/socket.io'
   },
   shim    : {
     backbone    : {
@@ -28,7 +28,7 @@ require([
   MainController
 ) {
 
-  var socket = io.connect('http://localhost:40024');
+  var socket = io.connect('http://' + document.location.host);
 
 
 
